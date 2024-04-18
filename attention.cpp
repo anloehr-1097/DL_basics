@@ -75,8 +75,7 @@ Matrix<T> matmul(Matrix<T> A, Matrix<T> B){
 }
 
 
-template<typename T>
-T dot(std::vector<T> v1, std::vector<T> v2){
+template<typename T> T dot(std::vector<T> v1, std::vector<T> v2){
   // only for numeric types
   T res = {};
   for (int i = 0; i < v1.size(); ++i){
@@ -106,6 +105,29 @@ void random_populate(std::vector<T> *v, std::uniform_real_distribution<T> &d, st
 
 };
 
+template<typename T>
+Matrix<T> softmax(Matrix<T> m){
+  // apply softmax rowwise to matrix
+  Matrix<T> rw_sm_mat = Matrix<T>(m.rows, m.cols);
+  std::vector<T> new_data = {};
+  std::vector<T> v(m.cols);
+
+  typename std::vector<T>::iterator it = m.data.begin();
+
+  for (int i = 0; i < m.rows; i++){
+    for (int j = 0; j < m.cols; j++){
+      v[j] = m.data[i * m.cols + j];
+    };
+    v = softmax(v);
+    new_data.insert(new_data.end(), v.begin(), v.end());
+
+  };
+  rw_sm_mat.populate(new_data);
+  rw_sm_mat.print();
+  return rw_sm_mat;
+};
+
+
 
 template <typename T>
 std::vector<T> attention(Matrix<T> keys, Matrix<T> values, Matrix<T> queries){
@@ -115,8 +137,11 @@ std::vector<T> attention(Matrix<T> keys, Matrix<T> values, Matrix<T> queries){
   index_mat.print();
   index_mat / T(keys.cols);
   index_mat.print();
-  // apply rowwise softmax
-  std::vector<T> v = softmax(std::vector<T>(10) = {10.0});
+  // TODO apply rowwise softmax
+  std::cout << "Softmax\n";
+  index_mat = softmax(index_mat);
+  std::cout << "Softmax completed\n";
+  //std::vector<T> v = softmax(std::vector<T>(10) = {10.0});
 
 
 
@@ -152,6 +177,7 @@ int main() {
   c = matmul(m, n);
   c.print();
   attention<double>(m, n, c);
+
   std::default_random_engine device;
   std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
