@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <functional>
 #include <iostream>
 #include <ostream>
 #include <vector>
@@ -6,6 +7,9 @@
 #include <cmath>
 #include <numeric>
 #include<random>
+#include <functional>
+#include <algorithm>
+
 
 
 template<typename T>
@@ -54,6 +58,15 @@ public:
     std::cout << std::endl;
 
   };
+};
+
+
+template<typename T>
+void print_v(std::vector<T> v){
+  for (int i = 0; i < v.size(); i++){
+    std::cout << v[i] << " ";
+  };
+  std::cout << std::endl;
 };
 
 template<typename T>
@@ -118,12 +131,11 @@ Matrix<T> softmax(Matrix<T> m){
     for (int j = 0; j < m.cols; j++){
       v[j] = m.data[i * m.cols + j];
     };
-    v = softmax(v);
+    v = softmax(v); 
     new_data.insert(new_data.end(), v.begin(), v.end());
 
   };
   rw_sm_mat.populate(new_data);
-  rw_sm_mat.print();
   return rw_sm_mat;
 };
 
@@ -135,7 +147,8 @@ std::vector<T> attention(Matrix<T> keys, Matrix<T> values, Matrix<T> queries){
   keys.transpose();
   Matrix<T> index_mat = matmul(queries, keys);
   index_mat.print();
-  index_mat / T(keys.cols);
+  // index_mat / T(keys.cols);
+  index_mat / T(std::sqrt(keys.cols));
   index_mat.print();
   // TODO apply rowwise softmax
   std::cout << "Softmax\n";
