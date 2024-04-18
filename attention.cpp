@@ -100,10 +100,11 @@ template<typename T> T dot(std::vector<T> v1, std::vector<T> v2){
 
 template<typename T>
 std::vector<T> softmax(std::vector<T> v){
+  T acc_res = 0.0;
   for (int i = 0; i < v.size(); i++) {
     v[i] = std::exp(v[i]);
   };
-  T v_sum  = std::accumulate(v.begin(), v.end(), 0);
+  T v_sum  = std::accumulate(v.begin(), v.end(), acc_res);
   for (int i = 0; i < v.size(); i++) {
     v[i] /= v_sum;
   };
@@ -127,6 +128,7 @@ Matrix<T> softmax(Matrix<T> m){
 
   typename std::vector<T>::iterator it = m.data.begin();
 
+
   for (int i = 0; i < m.rows; i++){
     for (int j = 0; j < m.cols; j++){
       v[j] = m.data[i * m.cols + j];
@@ -142,33 +144,22 @@ Matrix<T> softmax(Matrix<T> m){
 
 
 template <typename T>
-std::vector<T> attention(Matrix<T> keys, Matrix<T> values, Matrix<T> queries){
+Matrix<T> attention(Matrix<T> keys, Matrix<T> values, Matrix<T> queries){
   // queries and keys rowwise in matrix
   keys.transpose();
   Matrix<T> index_mat = matmul(queries, keys);
-  index_mat.print();
+  std::cout << "Index Mat after matmul\n";
   // index_mat / T(keys.cols);
   index_mat / T(std::sqrt(keys.cols));
-  index_mat.print();
-  // TODO apply rowwise softmax
-  std::cout << "Softmax\n";
   index_mat = softmax(index_mat);
-  std::cout << "Softmax completed\n";
-  //std::vector<T> v = softmax(std::vector<T>(10) = {10.0});
 
 
-
-
-
-
-  return keys.data;
+  return matmul(index_mat, values);
 };
 
 int main() {
-  std::cout << "Hello, World!" << std::endl;
-  //std::cout << attention()[0] << std::endl;
-  //std::cout << attention()[1] << std::endl;
-
+  std::default_random_engine device;
+  std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
   std::vector<double> m_data = {1.0, 2.0, 3.0, 4.0};
   std::vector<double> n_data = {2.0, 0.0, 0.0, 2.0};
@@ -177,22 +168,16 @@ int main() {
 
   Matrix<double> m = Matrix<double>(rows, cols);
   Matrix<double> n = Matrix<double>(rows, cols);
+  random_populate<double>(&m_data, distribution, device);
+  random_populate<double>(&n_data, distribution, device);
   m.populate(m_data);
   n.populate(n_data);
-  m.print();
-  n.print();
   m.transpose();
-  m.print();
-  m / 2;
-  m.print();
   Matrix<double> c = Matrix<double>(rows, cols);
-  c.print();
   c = matmul(m, n);
-  c.print();
-  attention<double>(m, n, c);
+  Matrix<double> att_out = attention<double>(m, n, c);
+  att_out.print();
 
-  std::default_random_engine device;
-  std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
 
 
