@@ -1,5 +1,3 @@
-#include <iostream>
-//include "autodiff.cpp"
 #include "autodiff.h"
 
 
@@ -13,8 +11,18 @@ int main(){
   t2.fill(fill_data_2, 4);
   add_tensors<float>(t1, t2, &t3);
   t1.print();
+  print_op(t1.op);
   t2.print();
-  // print_op(t3.op);
+  print_op(t2.op);
   t3.print();
+  print_op(t3.op);
+  Tensor<float> t4(1, 1, 4);
+  exp_tensor(t1, &t4);
+  t4.print();
+  print_op(t4.op);
+
+
+
+  
   return 0;
 };

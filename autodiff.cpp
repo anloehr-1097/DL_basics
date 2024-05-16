@@ -10,7 +10,7 @@
 
 void print_op(Op op){
   switch (op.type) {
-    case OpType::BINARY:
+  case OpType::BINARY: {
       switch (op.op.binary) {
 	case BinaryOp::ADD:
 	    std::cout << "Add\n";
@@ -38,8 +38,9 @@ void print_op(Op op){
 	    return;
       };
       return;
+  }
 
-    case OpType::UNARY: {
+  case OpType::UNARY: {
 	switch (op.op.unary) {
 	case UnaryOp::NEG:
 	  std::cout << "Neg\n";
@@ -71,9 +72,17 @@ void print_op(Op op){
 	  std::cout << "Tanh\n";
 	  break;
 	  return;
-
 	};
-    };
+	return;
+  }
+
+    
+
+  case OpType::NONE:
+    std::cout << "None\n";
+    break;
+    return;
+
       return;
   };
 }

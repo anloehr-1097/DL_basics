@@ -33,14 +33,22 @@ enum class BinaryOp {
   POW,
 };
 
+enum class NoneOp {
+	NONE
+};
+
+
 union AnyOp {
 	UnaryOp unary;
 	BinaryOp binary;
+  	NoneOp none;
 };
 
 enum class OpType {
 	UNARY,
-	BINARY
+	BINARY,
+	NONE
+
 };
 
 struct Op{
@@ -58,7 +66,7 @@ public:
   std::vector<Tensor<T>*> preds;
   //Tensor<T> *preds = nullptr; // predecessors
   int n_preds = 0;
-  Op op = {};
+  Op op = {AnyOp{.none = NoneOp::NONE}, OpType::NONE};
 
   // Tensor class
   Tensor(int x, int y, int z){
@@ -131,6 +139,19 @@ void add_tensors(Tensor<T> &t1, Tensor<T> &t2, Tensor<T> *out){
   };
   out->add_preds(&t1, &t2);
 
+};
+
+
+template<typename T>
+void exp_tensor(Tensor<T> &t, Tensor<T> *out){
+  // calculate exp of tensor entrywise
+  for (int i = 0; i < t.len; i++){
+    out -> data[i] = exp(t.data[i]);
+  };
+  out -> preds.push_back(&t);
+  out -> n_preds = 1;
+  out -> op.type = OpType::UNARY;
+  out -> op.op.unary = UnaryOp::EXP;
 };
 
 
