@@ -5,6 +5,7 @@
 #ifndef AUTODIFF_H
 #define AUTODIFF_H
 
+#include <cmath>
 #include <iostream>
 #include <cassert>
 #include<functional>
