@@ -2,4 +2,12 @@
 *.out
 *.org
 *.txt
+*.bu
+!CMakeLists.txt
+.cache/
+*.gz
+build/
+boost_lib/
+graph.cpp
+
 
