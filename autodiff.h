@@ -24,7 +24,6 @@ enum class UnaryOp {
 	LOG,
 	TANH,
 };
-
 enum class BinaryOp {
   ADD,
   SUB,
@@ -158,4 +157,3 @@ void exp_tensor(Tensor<T> &t, Tensor<T> *out){
 void print_op(Op op);
 
 #endif
-
