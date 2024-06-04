@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/Andy/Code/Cpp/DL_basics/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/Andy/Code/Cpp/DL_basics/boost_lib -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/DL_basics.dir/test_boost.cpp.o -c /Users/Andy/Code/Cpp/DL_basics/test_boost.cpp",
+  "file": "/Users/Andy/Code/Cpp/DL_basics/test_boost.cpp",
+  "output": "CMakeFiles/DL_basics.dir/test_boost.cpp.o"
+}
+]
