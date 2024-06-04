@@ -1,8 +1,27 @@
 [
 {
-  "directory": "/Users/Andy/Code/Cpp/DL_basics/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/Andy/Code/Cpp/DL_basics/boost_lib -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/DL_basics.dir/test_boost.cpp.o -c /Users/Andy/Code/Cpp/DL_basics/test_boost.cpp",
-  "file": "/Users/Andy/Code/Cpp/DL_basics/test_boost.cpp",
-  "output": "CMakeFiles/DL_basics.dir/test_boost.cpp.o"
+  "directory": "/home/andy/Code/Cpp/DL_basics/build",
+  "command": "/usr/bin/c++  -I/home/andy/Code/Cpp/DL_basics/boost_lib -std=gnu++17 -o CMakeFiles/tests_boost.out.dir/test_boost.cpp.o -c /home/andy/Code/Cpp/DL_basics/test_boost.cpp",
+  "file": "/home/andy/Code/Cpp/DL_basics/test_boost.cpp"
+},
+{
+  "directory": "/home/andy/Code/Cpp/DL_basics/build",
+  "command": "/usr/bin/c++   -std=gnu++17 -o CMakeFiles/main.out.dir/main.cpp.o -c /home/andy/Code/Cpp/DL_basics/main.cpp",
+  "file": "/home/andy/Code/Cpp/DL_basics/main.cpp"
+},
+{
+  "directory": "/home/andy/Code/Cpp/DL_basics/build",
+  "command": "/usr/bin/c++   -std=gnu++17 -o CMakeFiles/main.out.dir/autodiff.cpp.o -c /home/andy/Code/Cpp/DL_basics/autodiff.cpp",
+  "file": "/home/andy/Code/Cpp/DL_basics/autodiff.cpp"
+},
+{
+  "directory": "/home/andy/Code/Cpp/DL_basics/build",
+  "command": "/usr/bin/c++   -std=gnu++17 -o CMakeFiles/tests.out.dir/tests/tests.cpp.o -c /home/andy/Code/Cpp/DL_basics/tests/tests.cpp",
+  "file": "/home/andy/Code/Cpp/DL_basics/tests/tests.cpp"
+},
+{
+  "directory": "/home/andy/Code/Cpp/DL_basics/build",
+  "command": "/usr/bin/c++   -std=gnu++17 -o CMakeFiles/tests.out.dir/autodiff.cpp.o -c /home/andy/Code/Cpp/DL_basics/autodiff.cpp",
+  "file": "/home/andy/Code/Cpp/DL_basics/autodiff.cpp"
 }
 ]
