@@ -20,9 +20,8 @@ int main(){
   exp_tensor(t1, &t4);
   t4.print();
   print_op(t4.op);
-
-
-
-  
+  Layer<float> layer_1(4,5,NonLinearity::SIGMOID);
+  layer_1.calc(.4);
+   layer_1.print();
   return 0;
 };

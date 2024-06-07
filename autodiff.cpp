@@ -88,3 +88,12 @@ void print_op(Op op){
 }
 
 
+float sigmoid(float inp){
+    std::cout << "SIGMOID" << std::endl;
+    return inp;
+}
+
+float relu(float inp){
+    std::cout << "RELU" << std::endl;
+    return inp;
+}

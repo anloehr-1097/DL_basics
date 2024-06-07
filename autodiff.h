@@ -4,6 +4,7 @@
 
 #ifndef AUTODIFF_H
 #define AUTODIFF_H
+#endif
 
 #include <cmath>
 #include <iostream>
@@ -56,6 +57,21 @@ struct Op{
   	OpType type;
 };
 
+
+enum class NonLinearity {
+    SIGMOID,
+    RELU
+};
+
+
+// TODO implement these
+float sigmoid(float);
+
+float relu (float inp);
+
+
+
+
 // create a tensor of type T
 template<typename T>
 class Tensor {
@@ -67,6 +83,7 @@ public:
   //Tensor<T> *preds = nullptr; // predecessors
   int n_preds = 0;
   Op op = {AnyOp{.none = NoneOp::NONE}, OpType::NONE};
+  T *grad = nullptr; // gradient
 
   // Tensor class
   Tensor(int x, int y, int z){
@@ -80,6 +97,7 @@ public:
 
     data = new T[x * y * z]{};
     len = x * y * z;
+    grad = new T[x * y * z]{};
 
 
     if (DEBUG){
@@ -154,7 +172,61 @@ void exp_tensor(Tensor<T> &t, Tensor<T> *out){
   out -> op.op.unary = UnaryOp::EXP;
 };
 
-
 void print_op(Op op);
 
-#endif
+
+
+// bundle inputs with ops
+template<typename T>
+class Layer {
+
+    //using FuncPtr = T(*)(T);
+    // FuncPtr act_fun_ptr = nullptr;
+    T(*act_fun_ptr)(T) = nullptr;
+    Tensor<T> *data {};
+     
+
+public:
+    Layer(int num_in, int num_out, NonLinearity act_fun){
+        // create Matrix of rank, application function
+
+        //Tensor<T> data = Tensor<T>(num_in, num_out, 1);
+        data = new Tensor<T>(num_in, num_out, 1);
+
+        // check type T, assign correct function to act_fun_ptr
+        if constexpr (std::is_same_v<T, float>){
+            switch (act_fun){
+                case NonLinearity::SIGMOID:
+                    act_fun_ptr = &sigmoid;
+                    break;
+                case NonLinearity::RELU:
+                    act_fun_ptr = &relu;
+                    break;
+                default:
+                    act_fun_ptr = &sigmoid;
+                    break;
+            }
+        }
+        else if constexpr(std::is_same_v<T, double>) {
+            // TODO double implementation of sigmoid
+            std::cout << "double" << std::endl;
+        }
+    }
+
+    void calc(T inp){
+        std::cout << inp << std::endl;
+        act_fun_ptr(inp);
+    };
+    void print(){
+        std::cout << "Data: ";
+        data->print();
+        std::cout << std::endl;
+    };
+};
+
+
+// computation graph
+class Model {
+
+};
+
