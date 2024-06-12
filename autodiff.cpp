@@ -1,4 +1,5 @@
 // Autodiff in C++ using operator overloading in the style of Karpathy's micrograd
+#include <algorithm>
 #include<iostream>
 #include<functional>
 #include <tuple>
@@ -87,13 +88,44 @@ void print_op(Op op){
   };
 }
 
-
-float sigmoid(float inp){
-    std::cout << "SIGMOID" << std::endl;
-    return inp;
+template<typename T> 
+T s_relu(T inp){
+    return std::max(inp, (T)0);
 }
 
-float relu(float inp){
-    std::cout << "RELU" << std::endl;
-    return inp;
+Tensor<float> sigmoid(Tensor<float> &inp){
+    std::cout << "SIGMOID" << std::endl;
+    Tensor<float> out(std::get<0>(inp.shape),std::get<1>(inp.shape), std::get<2>(inp.shape));
+    return out;
+}
+
+Tensor<float> f_sigmoid(Tensor<float> &inp){
+    std::cout << "SIGMOID" << std::endl;
+    Tensor<float> out(std::get<0>(inp.shape),std::get<1>(inp.shape), std::get<2>(inp.shape));
+    return out;
+}
+
+Tensor<double> d_sigmoid(Tensor<double> &inp){
+    std::cout << "SIGMOID" << std::endl;
+    Tensor<double> out(std::get<0>(inp.shape),std::get<1>(inp.shape), std::get<2>(inp.shape));
+    return out;
+}
+
+
+Tensor<double> d_relu(Tensor<double> &inp){
+
+    Tensor<double> out(std::get<0>(inp.shape), std::get<1>(inp.shape), std::get<2>(inp.shape));
+    for (int i = 0; i < inp.len; i++){
+        out.data[i] = s_relu(inp.data[i]);
+    }
+    return out;
+}
+
+Tensor<float> relu(Tensor<float> &inp){
+
+    Tensor<float> out(std::get<0>(inp.shape), std::get<1>(inp.shape), std::get<2>(inp.shape));
+    for (int i = 0; i < inp.len; i++){
+        out.data[i] = s_relu(inp.data[i]);
+    }
+    return out;
 }

@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(BOOST_ROOT "~/Code/Cpp/DL_basics/boost_lib/")
+set(CMAKE_BUILD_TYPE Debug)
 
+# add_compile_options(-fsanitize=address)
 find_package(Boost REQUIRED)
 # adding a required dependency
 # find_package(Torch REQUIRED)

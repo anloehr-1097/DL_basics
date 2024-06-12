@@ -64,13 +64,6 @@ enum class NonLinearity {
 };
 
 
-// TODO implement these
-float sigmoid(float);
-
-float relu (float inp);
-
-
-
 
 // create a tensor of type T
 template<typename T>
@@ -111,9 +104,18 @@ public:
     };
 	};
 
+   Tensor(){
+    std::cout << "Empty init" << std::endl;
+
+    };
+
   ~Tensor(){
-    delete[] data;
+     
+    if (data == nullptr){
+            return;
+     }
     //delete[] preds;
+    delete[] data;
     if (DEBUG){
       std::cout << "Tensor deleted\n";
     };
@@ -175,48 +177,94 @@ void exp_tensor(Tensor<T> &t, Tensor<T> *out){
 void print_op(Op op);
 
 
+// TODO implement these
+Tensor<float> sigmoid(Tensor<float> &inp);
+Tensor<float> f_sigmoid(Tensor<float> &inp);
+Tensor<float> relu (Tensor<float> &inp);
+Tensor<double> d_sigmoid(Tensor<double> &inp);
+Tensor<double> d_relu (Tensor<double> &inp);
+
+
+template<typename T>
+Tensor<T> matmul(Tensor<T> &A, Tensor<T> &B){
+  // basic non optimized matmul
+  assert(std::get<1>(A.shape) == std::get<0>(B.shape));
+  Tensor<T> C (std::get<0>(A.shape), std::get<1>(B.shape), 1);
+
+  for (int i = 0; i < std::get<0>(A.shape); i++) {
+    for (int j = 0; j < std::get<1>(B.shape); j++) {
+      for (int k = 0; k < std::get<1>(A.shape); k++) {
+	C.data[i * std::get<1>(C.shape) + j] += \
+	  A.data[i * std::get<1>(A.shape) + k] * B.data[k * std::get<1>(B.shape) + j];
+	  }
+	}
+  };
+  return C;
+}
+
 
 // bundle inputs with ops
 template<typename T>
 class Layer {
-
+    int num_in;
+    int num_out;
     //using FuncPtr = T(*)(T);
     // FuncPtr act_fun_ptr = nullptr;
-    T(*act_fun_ptr)(T) = nullptr;
+    Tensor<T> (*act_fun_ptr)(Tensor<T> &) = nullptr;
     Tensor<T> *data {};
-     
 
 public:
-    Layer(int num_in, int num_out, NonLinearity act_fun){
-        // create Matrix of rank, application function
-
+    Layer(int num_out_features, int num_in_features, NonLinearity act_fun){
+        // create Matrix of rank, activation function
         //Tensor<T> data = Tensor<T>(num_in, num_out, 1);
-        data = new Tensor<T>(num_in, num_out, 1);
+        data = new Tensor<T>(num_out_features, num_in_features, 1);
+        num_in = num_in_features;
+        num_out = num_out_features;
+
 
         // check type T, assign correct function to act_fun_ptr
         if constexpr (std::is_same_v<T, float>){
             switch (act_fun){
                 case NonLinearity::SIGMOID:
-                    act_fun_ptr = &sigmoid;
+                    act_fun_ptr = &f_sigmoid;
                     break;
                 case NonLinearity::RELU:
                     act_fun_ptr = &relu;
                     break;
                 default:
-                    act_fun_ptr = &sigmoid;
+                    act_fun_ptr = &f_sigmoid;
                     break;
             }
         }
         else if constexpr(std::is_same_v<T, double>) {
             // TODO double implementation of sigmoid
-            std::cout << "double" << std::endl;
+            switch (act_fun){
+                case NonLinearity::SIGMOID:
+                    act_fun_ptr = &d_sigmoid;
+                    break;
+                case NonLinearity::RELU:
+                    act_fun_ptr = &d_relu;
+                    break;
+                default:
+                    act_fun_ptr = &d_sigmoid;
+                    break;
+            }
+
+        }
+        else {
+            std::cerr << "Unsupported type for Layer." << std::endl;
         }
     }
 
-    void calc(T inp){
-        std::cout << inp << std::endl;
-        act_fun_ptr(inp);
+    Tensor<T> compute(Tensor<T> &inp){
+        // assert that input is of expected size
+        assert(std::get<0>(inp.shape) == std::get<1>(data->shape));  // matmul well defined
+        assert(std::get<2>(inp.shape) == 1);  // 2d tensor
+
+        Tensor<T> out = matmul<T>(*data, inp);
+        return act_fun_ptr(out);
     };
+
     void print(){
         std::cout << "Data: ";
         data->print();
@@ -227,6 +275,13 @@ public:
 
 // computation graph
 class Model {
+public:
+    Model(){
 
+    };
+
+    ~Model(){
+
+    };
 };
 
