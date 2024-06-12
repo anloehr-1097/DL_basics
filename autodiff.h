@@ -261,7 +261,8 @@ public:
         assert(std::get<0>(inp.shape) == std::get<1>(data->shape));  // matmul well defined
         assert(std::get<2>(inp.shape) == 1);  // 2d tensor
 
-        Tensor<T> out = matmul<T>(*data, inp);
+        //Tensor<T> out = matmul<T>(*data, inp);
+        auto out = matmul<T>(*data, inp);
         return act_fun_ptr(out);
     };
 
