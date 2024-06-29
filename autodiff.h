@@ -275,9 +275,13 @@ public:
 
 
 // computation graph
+template<typename T>
 class Model {
 public:
+    int num_layers;
+    Layer<T> *layers;
     Model(){
+        ;
 
     };
 
