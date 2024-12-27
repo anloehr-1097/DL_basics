@@ -153,7 +153,15 @@ public:
   };
 
    bool operator==(const Tensor<T> &other){
-        return *data == *other.data;
+
+        if (len != other.len)
+            return false;
+
+        for (int i = 0; i < len; i++){
+            if (data[i] != other.data[i])
+            return false;
+        }
+        return true;
     }
 
     Tensor(Tensor<T> &other){
@@ -207,6 +215,29 @@ public:
         new_tens.fill(new_tens_data, new_tens_size);
         return new_tens;
     }
+
+    Tensor<T> transpose(){
+        // transpose the Tensor
+        int rows = std::get<1>(shape); 
+        int cols = std::get<2>(shape);
+        // shape = std::tuple<int, int, int>(std::get<0>(shape), cols, rows);
+        T *new_data = new T[len]{};
+        memset(new_data, len, 0);
+        int row, col, new_row, new_col;
+        for (int i = 0; i < len; i++) {
+            row = i / cols;
+            col = i - row * cols;
+            new_row = col; 
+            new_col = row;
+            new_data[new_row * rows + new_col] = data[i];
+            // new_data[new_row * cols + new_col] = data[i];
+        };
+        Tensor<T> new_tens(std::get<0>(shape), cols, rows);
+        new_tens.fill(new_data, len);
+
+        return new_tens;
+        // data = new_data;
+    };
 };
 
 

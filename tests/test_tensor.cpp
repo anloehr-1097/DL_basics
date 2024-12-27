@@ -37,3 +37,16 @@ TEST(TensorTest, multiply){
 // 0 1
 // 1 1
 
+
+TEST(TensorTest, transpose){
+    Tensor<int> t1(1,2,3);
+    int t1_data[6] = {1, 2, 3, 4, 5, 6};
+    t1.fill(t1_data, 6);
+    Tensor<int> t3 = t1.transpose();
+    Tensor<int> t2(1,3,2);
+    int t2_data[6] = {1, 4, 2, 5, 3, 6};
+    t2.fill(t2_data, 6);
+    t3.print();
+    t2.print();
+    EXPECT_TRUE(t3 == t2);
+}
