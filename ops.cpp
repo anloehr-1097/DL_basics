@@ -21,10 +21,10 @@ Tensor<T> attention(Tensor<T> &keys, Tensor<T> &values, Tensor<T> &queries){
     key_transp.print();
     values.print();
     queries.print();
-    Tensor<T> scaled_dot_product = queries * key_transp; 
+    Tensor<T> scaled_dot_product = queries * key_transp;
+    scaled_dot_product.print();
+
     Tensor<T> results = scaled_dot_product * values;
-
-    return scaled_dot_product * values;
-    
-
+    results.print();
+    return results;
 }

@@ -202,7 +202,8 @@ public:
         int new_tens_size = rows_left * cols_right;
         
         T new_tens_data[new_tens_size];
-        memset(new_tens_data, 0.0, new_tens_size);
+        memset(new_tens_data, (T)(0.0), new_tens_size*sizeof(T));
+        
         // else create new tensor with appropriate size
         // assume only one dim in batch dim first
         for (int i = 0; i < rows_left; i++){
@@ -222,7 +223,7 @@ public:
         int cols = std::get<2>(shape);
         // shape = std::tuple<int, int, int>(std::get<0>(shape), cols, rows);
         T *new_data = new T[len]{};
-        memset(new_data, len, 0);
+        memset(new_data, (T)(0.0), len*sizeof(T));
         int row, col, new_row, new_col;
         for (int i = 0; i < len; i++) {
             row = i / cols;

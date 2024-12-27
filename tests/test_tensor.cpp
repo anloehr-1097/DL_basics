@@ -21,6 +21,7 @@ TEST(TensorTest, multiply){
     Tensor<float> t1(1,2,3);
     Tensor<float> t2(1,3,2);
     float t1_data[6] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+    
     float t2_data[6] = {1.0, 0.0, 0.0, 1.0, 1.0, 1.0};
     t1.fill(t1_data, 6);
     t2.fill(t2_data, 6);
