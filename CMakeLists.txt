@@ -25,15 +25,6 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(
-  hello_test
-  tests/testgtest.cpp
-)
-target_link_libraries(
-  hello_test
-  GTest::gtest_main
-)
-
-add_executable(
   test_ops
   tests/test_ops.cpp
 )
@@ -53,7 +44,8 @@ target_link_libraries(
 
 
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(test_tensor)
+gtest_discover_tests(test_ops)
 
 add_executable(main.out main.cpp autodiff.h autodiff.cpp)
 add_executable(tests.out tests/tests.cpp autodiff.cpp)

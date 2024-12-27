@@ -10,7 +10,7 @@ TEST(OPS_TEST, test_name){
     Tensor<float> vals(2, 2, 8);
     Tensor<float> query(1, 1, 4);
     Tensor<float> res = attention(keys, vals, query);
-    Tensor<float> exp_res(1,1,4);
-    EXPECT_TRUE(res==exp_res);
+
+    EXPECT_TRUE(res==keys);
 }
 

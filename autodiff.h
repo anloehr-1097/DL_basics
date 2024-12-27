@@ -5,6 +5,7 @@
 #ifndef AUTODIFF_H
 #define AUTODIFF_H
 #include <iterator>
+#include <ostream>
 #endif
 
 #include <cmath>
@@ -14,9 +15,11 @@
 #include <tuple>
 #include <cassert>
 #include <vector>
+#include <format>
+#include "utils.cpp"
 
 
-#define DEBUG 1
+#define DEBUG 0
 
 
 enum class UnaryOp {
@@ -167,12 +170,45 @@ public:
         else {
         data = nullptr;
         }
-        std::cout << "Other data:";
-        other.print();
-        std::cout << "This data";
-        print();
+        if (DEBUG){
+            std::cout << "Other data:";
+            other.print();
+            std::cout << "This data";
+            print();
+        }
+    }
+
+    Tensor<T> operator*(Tensor<T> &other_tens){
+        // multiply the 2 Tensors
+        // shape checks
+        if (std::get<2>(shape) != std::get<1>(other_tens.shape)){
+            // throw "Cannot multiply Tensors with shapes " << tuple_to_string(shape).c_str() << " and " << tuple_to_string(other_tens.shape).c_str();
+            std::cout << "Cannot multiply Tensors with shapes " << tuple_to_string(shape) << " and " << tuple_to_string(other_tens.shape);
+            throw -1;
+        } 
+        int rows_left  = std::get<1>(shape);
+        int cols_left = std::get<2>(shape);
+        int rows_right  = std::get<1>(other_tens.shape);
+        int cols_right = std::get<2>(other_tens.shape);
+        Tensor<T> new_tens(std::get<0>(shape), rows_left, cols_right);
+        int new_tens_size = rows_left * cols_right;
+        
+        T new_tens_data[new_tens_size];
+        memset(new_tens_data, 0.0, new_tens_size);
+        // else create new tensor with appropriate size
+        // assume only one dim in batch dim first
+        for (int i = 0; i < rows_left; i++){
+            for (int j = 0; j < cols_right; j++){
+                for (int k = 0; k < cols_left; k++){
+                    new_tens_data[i * cols_right + j] += (data[i * cols_left + k] * other_tens.data[k * cols_right + j]);
+                }
+            }
+        }
+        new_tens.fill(new_tens_data, new_tens_size);
+        return new_tens;
     }
 };
+
 
 
 template<typename T>
