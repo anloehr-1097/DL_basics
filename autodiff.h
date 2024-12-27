@@ -4,6 +4,7 @@
 
 #ifndef AUTODIFF_H
 #define AUTODIFF_H
+#include <iterator>
 #endif
 
 #include <cmath>
@@ -147,6 +148,30 @@ public:
     op.type = OpType::BINARY;
     op.op.binary = BinaryOp::ADD;
   };
+
+   bool operator==(const Tensor<T> &other){
+        return *data == *other.data;
+    }
+
+    Tensor(Tensor<T> &other){
+        len = other.len;
+        shape = other.shape;
+
+        if (other.data){
+            data = new T[len]{};
+            // only copy if other tensor is actually initialized well
+        for (int i = 0; i < len; i++){
+             data[i] = other.data[i];
+             }
+        }
+        else {
+        data = nullptr;
+        }
+        std::cout << "Other data:";
+        other.print();
+        std::cout << "This data";
+        print();
+    }
 };
 
 

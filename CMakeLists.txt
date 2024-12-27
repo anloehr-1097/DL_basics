@@ -4,9 +4,9 @@ project(DL_basics)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(BOOST_ROOT "~/Code/Cpp/DL_basics/boost_lib/")
+# set(BOOST_ROOT "~/Code/Cpp/DL_basics/boost_lib/")
 set(CMAKE_BUILD_TYPE Debug)
-
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "./bin")
 # add_compile_options(-fsanitize=address)
 # find_package(Boost REQUIRED)
 # adding a required dependency
@@ -21,6 +21,40 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 # add_executable(Autoencoders Autoencoders.cpp)
 # add_executable(tests_boost.out test_boost.cpp)
+
+enable_testing()
+
+add_executable(
+  hello_test
+  tests/testgtest.cpp
+)
+target_link_libraries(
+  hello_test
+  GTest::gtest_main
+)
+
+add_executable(
+  test_ops
+  tests/test_ops.cpp
+)
+target_link_libraries(
+  test_ops 
+  GTest::gtest_main
+)
+
+add_executable(
+  test_tensor
+  tests/test_tensor.cpp
+)
+target_link_libraries(
+  test_tensor 
+  GTest::gtest_main
+)
+
+
+include(GoogleTest)
+gtest_discover_tests(hello_test)
+
 add_executable(main.out main.cpp autodiff.h autodiff.cpp)
 add_executable(tests.out tests/tests.cpp autodiff.cpp)
 # target_include_directories(DL_basics PRIVATE "~/Code/Cpp/DL_basics/boost_lib/boost/graph/")
