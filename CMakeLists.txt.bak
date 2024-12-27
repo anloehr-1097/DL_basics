@@ -11,14 +11,7 @@ set(CMAKE_BUILD_TYPE Debug)
 # find_package(Boost REQUIRED)
 # adding a required dependency
 # find_package(Torch REQUIRED)
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+
 # add_executable(Autoencoders Autoencoders.cpp)
 # add_executable(tests_boost.out test_boost.cpp)
 add_executable(main.out main.cpp autodiff.h autodiff.cpp)
