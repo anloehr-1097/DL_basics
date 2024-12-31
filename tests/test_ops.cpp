@@ -5,9 +5,9 @@
 TEST(OPS_TEST, test_attention){
 
     // init tensors
-    Tensor<float> keys(1, 1, 4);
-    Tensor<float> vals(1, 1, 8);
-    Tensor<float> query(1, 1, 4);
+    Tensor<float> keys(1, 2, 2);
+    Tensor<float> vals(1, 2, 4);
+    Tensor<float> query(1,2, 2);
     
     float k_ar[4] = {1.0, 2.0, 3.0, 4.0};
     float v_ar[8] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
@@ -18,7 +18,6 @@ TEST(OPS_TEST, test_attention){
     vals.fill(v_ar, 8);
 
     Tensor<float> res = attention(keys, vals, query);
-    res.print();
     vals.print();
 
 

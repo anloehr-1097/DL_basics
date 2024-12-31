@@ -5,10 +5,9 @@ learn about the C++ std library, the C++ language, and deep learning.
 
 # Next steps
 ## Finish attention mechanism
-###  softmax implementation
-- exponentiaion
-- division
-- scalar multiplication
+### implement slicing
+### need to reimplement softmax to account for dimensions
+
 
 
 

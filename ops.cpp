@@ -1,4 +1,5 @@
-#include "autodiff.h"
+#include "autodiff.cpp"
+#include <cmath>
 #include <iostream>
 
 
@@ -7,24 +8,22 @@
 template<typename T>
 Tensor<T> attention(Tensor<T> &keys, Tensor<T> &values, Tensor<T> &queries){
 
-    // keyy dim: Nxn
-    // values dim: Nxm
-    // queries dim: Mxn
+    // keyy dim: 1xNxd_n
+    // values dim: 1xNxd_m
+    // queries dim: 1xMxd_n
     //
     if (std::get<2>(keys.shape) != std::get<2>(queries.shape)){
         std::cout << "Keys and values should be of same column size." << std::endl;
         throw -1;
     }
 
+    float d_n = std::get<2>(keys.shape);
     Tensor<T> key_transp = keys.transpose();
-    keys.print();
-    key_transp.print();
-    values.print();
-    queries.print();
-    Tensor<T> scaled_dot_product = queries * key_transp;
+    Tensor<T> scaled_dot_product = (queries * key_transp)/std::sqrt(d_n);
     scaled_dot_product.print();
+    softmax(scaled_dot_product).print();
 
-    Tensor<T> results = scaled_dot_product * values;
+    Tensor<T> results = softmax(scaled_dot_product) * values;
     results.print();
     return results;
 }

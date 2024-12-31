@@ -186,6 +186,37 @@ public:
         }
     }
 
+    Tensor<T> scale(T scalar){
+        // return new tensor scaled by 'scalar'
+
+        Tensor<T> new_tens = Tensor(std::get<0>(shape), std::get<1>(shape), std::get<2>(shape));
+        T *new_data = new T[len];
+
+        for (int i = 0; i < len; i++) {
+            // scale each entry by factor 'scale'
+            new_data[i] = data[i] * scalar;
+        }
+
+        new_tens.fill(new_data, len);
+        return new_tens;
+    }
+
+    Tensor<T> operator/(T scale){
+        assert(scale != 0 && "Division by 0 is not possible.");
+        if (scale == 0)
+            scale += 0.00001;
+
+        return this->scale(1/scale);
+    }
+
+    T sum(void){
+        T res = 0;
+        for (int i=0; i < len; i++){
+            res += data[i];
+        }
+        return res;
+    }
+
     Tensor<T> operator*(Tensor<T> &other_tens){
         // multiply the 2 Tensors
         // shape checks
@@ -215,6 +246,32 @@ public:
         }
         new_tens.fill(new_tens_data, new_tens_size);
         return new_tens;
+    }
+
+    Tensor<T> slice_dim_one(int start, int end, int step){
+        // TODO implement this
+        assert(start >= 0 && "Start must be greater or equal to 0.");
+        assert(end <= std::get<1>(shape) && "Index out of range.");
+        int new_size = (end - start) / step;
+        Tensor<T> new_tens(1, new_size, std::get<2>(shape));
+        T *new_data = new T[1 * new_size * std::get<2>(shape)];
+
+        int cols[new_size];
+        for (int i = 0; i < new_size ; i++) {
+            cols[i] = start + (i * step);
+        }
+
+        for(int i=0; i < new_size; i++){
+            for(int j = 0; j < std::get<2>(shape); j++){
+                ; 
+            }
+        }
+        
+
+
+
+
+        return this;
     }
 
     Tensor<T> transpose(){
@@ -255,6 +312,14 @@ void add_tensors(Tensor<T> &t1, Tensor<T> &t2, Tensor<T> *out){
 };
 
 
+
+template<typename T>
+Tensor<T> exponentiate(Tensor<T> &input_tens);
+
+template<typename T>
+Tensor<T> softmax(Tensor<T> &inp_tensor, int dim=1);
+
+
 template<typename T>
 void exp_tensor(Tensor<T> &t, Tensor<T> *out){
   // calculate exp of tensor entrywise
@@ -270,12 +335,14 @@ void exp_tensor(Tensor<T> &t, Tensor<T> *out){
 void print_op(Op op);
 
 
+
 // TODO implement these
 Tensor<float> sigmoid(Tensor<float> &inp);
 Tensor<float> f_sigmoid(Tensor<float> &inp);
 Tensor<float> relu (Tensor<float> &inp);
 Tensor<double> d_sigmoid(Tensor<double> &inp);
 Tensor<double> d_relu (Tensor<double> &inp);
+
 
 
 template<typename T>
@@ -365,6 +432,8 @@ public:
         std::cout << std::endl;
     };
 };
+
+
 
 
 // computation graph
