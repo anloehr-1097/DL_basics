@@ -11,5 +11,4 @@ boost_lib/
 graph.cpp
 *.png
 *.dot
-
-
+*.ipynb

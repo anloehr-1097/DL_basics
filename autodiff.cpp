@@ -1,13 +1,12 @@
 // Autodiff in C++ using operator overloading in the style of Karpathy's micrograd
 #include <algorithm>
 #include<iostream>
-#include<functional>
-#include <tuple>
 #include <cassert>
-#include <vector>
 #include "autodiff.h"
 
+#ifndef DEBUG 
 #define DEBUG 1
+#endif
 
 void print_op(Op op){
   switch (op.type) {
@@ -129,3 +128,26 @@ Tensor<float> relu(Tensor<float> &inp){
     }
     return out;
 }
+
+
+template<typename T>
+Tensor<T> exponentiate(Tensor<T> &inp_tensor){
+    Tensor<T> new_tens = inp_tensor;
+    for (int i = 0; i < new_tens.len; i++) {
+        new_tens.data[i] = exp(new_tens.data[i]);
+    }
+
+    return new_tens;
+}
+
+
+template<typename T>
+Tensor<T> softmax(Tensor<T> &inp_tensor, int dim){
+    // softmax function on tensor
+    Tensor<T>intermed = exponentiate(inp_tensor);
+    // TODO implement softmax row or columnwise
+    return intermed / intermed.sum();
+}
+
+
+

@@ -4,6 +4,8 @@
 
 #ifndef AUTODIFF_H
 #define AUTODIFF_H
+#include <iterator>
+#include <ostream>
 #endif
 
 #include <cmath>
@@ -13,9 +15,11 @@
 #include <tuple>
 #include <cassert>
 #include <vector>
+#include <format>
+#include "utils.cpp"
 
 
-#define DEBUG 1
+#define DEBUG 0
 
 
 enum class UnaryOp {
@@ -147,7 +151,153 @@ public:
     op.type = OpType::BINARY;
     op.op.binary = BinaryOp::ADD;
   };
+
+   bool operator==(const Tensor<T> &other){
+
+        if (len != other.len)
+            return false;
+
+        for (int i = 0; i < len; i++){
+            if (data[i] != other.data[i])
+            return false;
+        }
+        return true;
+    }
+
+    Tensor(Tensor<T> &other){
+        len = other.len;
+        shape = other.shape;
+
+        if (other.data){
+            data = new T[len]{};
+            // only copy if other tensor is actually initialized well
+        for (int i = 0; i < len; i++){
+             data[i] = other.data[i];
+             }
+        }
+        else {
+        data = nullptr;
+        }
+        if (DEBUG){
+            std::cout << "Other data:";
+            other.print();
+            std::cout << "This data";
+            print();
+        }
+    }
+
+    Tensor<T> scale(T scalar){
+        // return new tensor scaled by 'scalar'
+
+        Tensor<T> new_tens = Tensor(std::get<0>(shape), std::get<1>(shape), std::get<2>(shape));
+        T *new_data = new T[len];
+
+        for (int i = 0; i < len; i++) {
+            // scale each entry by factor 'scale'
+            new_data[i] = data[i] * scalar;
+        }
+
+        new_tens.fill(new_data, len);
+        return new_tens;
+    }
+
+    Tensor<T> operator/(T scale){
+        assert(scale != 0 && "Division by 0 is not possible.");
+        if (scale == 0)
+            scale += 0.00001;
+
+        return this->scale(1/scale);
+    }
+
+    T sum(void){
+        T res = 0;
+        for (int i=0; i < len; i++){
+            res += data[i];
+        }
+        return res;
+    }
+
+    Tensor<T> operator*(Tensor<T> &other_tens){
+        // multiply the 2 Tensors
+        // shape checks
+        if (std::get<2>(shape) != std::get<1>(other_tens.shape)){
+            // throw "Cannot multiply Tensors with shapes " << tuple_to_string(shape).c_str() << " and " << tuple_to_string(other_tens.shape).c_str();
+            std::cout << "Cannot multiply Tensors with shapes " << tuple_to_string(shape) << " and " << tuple_to_string(other_tens.shape);
+            throw -1;
+        } 
+        int rows_left  = std::get<1>(shape);
+        int cols_left = std::get<2>(shape);
+        int rows_right  = std::get<1>(other_tens.shape);
+        int cols_right = std::get<2>(other_tens.shape);
+        Tensor<T> new_tens(std::get<0>(shape), rows_left, cols_right);
+        int new_tens_size = rows_left * cols_right;
+        
+        T new_tens_data[new_tens_size];
+        memset(new_tens_data, (T)(0.0), new_tens_size*sizeof(T));
+        
+        // else create new tensor with appropriate size
+        // assume only one dim in batch dim first
+        for (int i = 0; i < rows_left; i++){
+            for (int j = 0; j < cols_right; j++){
+                for (int k = 0; k < cols_left; k++){
+                    new_tens_data[i * cols_right + j] += (data[i * cols_left + k] * other_tens.data[k * cols_right + j]);
+                }
+            }
+        }
+        new_tens.fill(new_tens_data, new_tens_size);
+        return new_tens;
+    }
+
+    Tensor<T> slice_dim_one(int start, int end, int step){
+        // TODO implement this
+        assert(start >= 0 && "Start must be greater or equal to 0.");
+        assert(end <= std::get<1>(shape) && "Index out of range.");
+        int new_size = (end - start) / step;
+        Tensor<T> new_tens(1, new_size, std::get<2>(shape));
+        T *new_data = new T[1 * new_size * std::get<2>(shape)];
+
+        int cols[new_size];
+        for (int i = 0; i < new_size ; i++) {
+            cols[i] = start + (i * step);
+        }
+
+        for(int i=0; i < new_size; i++){
+            for(int j = 0; j < std::get<2>(shape); j++){
+                ; 
+            }
+        }
+        
+
+
+
+
+        return this;
+    }
+
+    Tensor<T> transpose(){
+        // transpose the Tensor
+        int rows = std::get<1>(shape); 
+        int cols = std::get<2>(shape);
+        // shape = std::tuple<int, int, int>(std::get<0>(shape), cols, rows);
+        T *new_data = new T[len]{};
+        memset(new_data, (T)(0.0), len*sizeof(T));
+        int row, col, new_row, new_col;
+        for (int i = 0; i < len; i++) {
+            row = i / cols;
+            col = i - row * cols;
+            new_row = col; 
+            new_col = row;
+            new_data[new_row * rows + new_col] = data[i];
+            // new_data[new_row * cols + new_col] = data[i];
+        };
+        Tensor<T> new_tens(std::get<0>(shape), cols, rows);
+        new_tens.fill(new_data, len);
+
+        return new_tens;
+        // data = new_data;
+    };
 };
+
 
 
 template<typename T>
@@ -160,6 +310,14 @@ void add_tensors(Tensor<T> &t1, Tensor<T> &t2, Tensor<T> *out){
   out->add_preds(&t1, &t2);
 
 };
+
+
+
+template<typename T>
+Tensor<T> exponentiate(Tensor<T> &input_tens);
+
+template<typename T>
+Tensor<T> softmax(Tensor<T> &inp_tensor, int dim=1);
 
 
 template<typename T>
@@ -177,12 +335,14 @@ void exp_tensor(Tensor<T> &t, Tensor<T> *out){
 void print_op(Op op);
 
 
+
 // TODO implement these
 Tensor<float> sigmoid(Tensor<float> &inp);
 Tensor<float> f_sigmoid(Tensor<float> &inp);
 Tensor<float> relu (Tensor<float> &inp);
 Tensor<double> d_sigmoid(Tensor<double> &inp);
 Tensor<double> d_relu (Tensor<double> &inp);
+
 
 
 template<typename T>
@@ -272,6 +432,8 @@ public:
         std::cout << std::endl;
     };
 };
+
+
 
 
 // computation graph
